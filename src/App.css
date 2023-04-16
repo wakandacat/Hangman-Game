@@ -55,10 +55,25 @@ a {
 
 #alph {
     position: relative;
-    background-color: darkred;
+    background-color: greenyellow;
     display: flex;
     flex-wrap: wrap;
     top: 300px;
+}
+
+.guessedCorrect {
+    color: green;
+    padding: 5px;
+}
+
+.guessedIncorrect {
+    color: red;
+    padding: 5px;
+}
+
+.notGuessed {
+    color: blue;
+    padding: 5px;
 }
 
 #reset {

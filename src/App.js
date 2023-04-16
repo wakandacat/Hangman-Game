@@ -21,8 +21,8 @@ function App() {
     const [numGuess, increaseNum] = useState(0); 
 
     //the setter function for numGuess
-    function handleGuess(newGuess) {
-        setValue(guessedLetters + newGuess);
+    function handleNum(newGuess) {
+        increaseNum(guessedLetters + newGuess);
     }
 
 
@@ -49,7 +49,7 @@ function App() {
                 console.log("please enter a valid letter");
             }
 
-            console.log(guessedLetters.value);
+            //console.log(guessedLetters.value);
         }
 
 
@@ -147,6 +147,7 @@ function Character({value}) {
     return <p className="chars">{value}</p>;
 }
 
+
 //the whole word to guess
 function Word(guessedLetters) {
     const collectionOfChars = [];
@@ -170,17 +171,52 @@ function Word(guessedLetters) {
     return <div id="theWord" className="charBox">{collectionOfChars}</div>;
 }
 
+//each character in the word to guess
+function AlphChar({ guessedClass, value }) {
+    //console.log(guessedClass);
+    return <p className={guessedClass}>{value}</p>;
+}
+
 
 //the whole alphabet
 function Alphabet(guessedLetters) {
     const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",];
+    const collectionOfAlph = [];
 
-    return (
-    <div id="alph">
-        {letters.map((letters) => (
-            <Character value={letters} key={letters.toString()}></Character>
-        ))}
-    </div>);
+    
+  //  const [guessedClass, setClass] = useState("notGuessed");
+
+   // function handleClass(guessedClass) {
+   //     setClass(guessedClass);
+    //}
+
+    let guessedClass = "notGuessed"; //decide which classname the character will get depending on if it has been guessed or not
+
+    const alphItems = letters.map((letters) =>
+    {
+        if (guessedLetters.value.includes(letters) || guessedLetters.value.includes(letters.toLowerCase()) || guessedLetters.value.includes(letters.toUpperCase())) {
+         //   console.log("yes");
+                guessedClass = "guessedCorrect";
+            //handleClass("guessedCorrect");
+        } else {
+           // console.log("no");
+                guessedClass = "guessedIncorrect";
+            //handleClass("guessedIncorrect");
+        }
+        console.log(guessedClass);
+        collectionOfAlph.push(<AlphChar className={guessedClass} value={letters} key={letters.toString()}></AlphChar>);
+        //console.log(collectionOfAlph);
+    }
+    );
+
+    return <div id="alph" >{collectionOfAlph}</div>;
+
+    //return (
+    //<div id="alph">
+    //        {letters.map((letters) => (
+    //            <p className={guessedClass} value={letters} key={letters.toString()}>{letters}</p>
+    //        ))}
+    //</div>);
 
 }
 
