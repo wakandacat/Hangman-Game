@@ -142,7 +142,7 @@ function getNewURL() {
 
 }
 
-//each character in the word to guess
+//each character in the word to guess and alphabet
 function Character({value}) {
     return <p className="chars">{value}</p>;
 }
@@ -171,52 +171,34 @@ function Word(guessedLetters) {
     return <div id="theWord" className="charBox">{collectionOfChars}</div>;
 }
 
-//each character in the word to guess
-function AlphChar({ guessedClass, value }) {
-    //console.log(guessedClass);
-    return <p className={guessedClass}>{value}</p>;
-}
-
 
 //the whole alphabet
 function Alphabet(guessedLetters) {
-    const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",];
-    const collectionOfAlph = [];
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const collectionOfAlph = []; 
+    let guessedClass = 0; //decide which classname the character will get depending on if it has been guessed or not
+    //1 = not guessed, 2 = guessed but wrong, 3 = guessed but right
 
-    
-  //  const [guessedClass, setClass] = useState("notGuessed");
+    for (let i = 0; i < letters.length; i++) {
 
-   // function handleClass(guessedClass) {
-   //     setClass(guessedClass);
-    //}
-
-    let guessedClass = "notGuessed"; //decide which classname the character will get depending on if it has been guessed or not
-
-    const alphItems = letters.map((letters) =>
-    {
-        if (guessedLetters.value.includes(letters) || guessedLetters.value.includes(letters.toLowerCase()) || guessedLetters.value.includes(letters.toUpperCase())) {
-         //   console.log("yes");
-                guessedClass = "guessedCorrect";
-            //handleClass("guessedCorrect");
+        //if the letter is in the guessedLetters string (has been guessed)
+        if (guessedLetters.value.includes(letters[i]) || guessedLetters.value.includes(letters[i].toLowerCase()) || guessedLetters.value.includes(letters[i].toUpperCase())) {
+            //if the letter is in the word to guess
+            if (tempWord.includes(letters[i]) || tempWord.includes(letters[i].toLowerCase()) || tempWord.includes(letters[i].toUpperCase())) {
+                guessedClass = 3;
+            } else {
+                guessedClass = 2;
+            }
         } else {
-           // console.log("no");
-                guessedClass = "guessedIncorrect";
-            //handleClass("guessedIncorrect");
+            guessedClass = 1;
         }
-        console.log(guessedClass);
-        collectionOfAlph.push(<AlphChar className={guessedClass} value={letters} key={letters.toString()}></AlphChar>);
-        //console.log(collectionOfAlph);
+
+        //toggle character class depending on if it is guessed or not
+        collectionOfAlph.push(<p className={`chars ${guessedClass == 1 ? "" : (guessedClass == 2 ? "guessedIncorrect" : "guessedCorrect")}`} value={letters[i]} key={letters[i].toString()}>{letters[i]}</p>);
+
     }
-    );
 
-    return <div id="alph" >{collectionOfAlph}</div>;
-
-    //return (
-    //<div id="alph">
-    //        {letters.map((letters) => (
-    //            <p className={guessedClass} value={letters} key={letters.toString()}>{letters}</p>
-    //        ))}
-    //</div>);
+    return <div id="alph">{collectionOfAlph}</div>;
 
 }
 

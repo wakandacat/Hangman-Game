@@ -62,13 +62,11 @@ a {
 }
 
 .guessedCorrect {
-    color: green;
-    padding: 5px;
+    color: green !important;
 }
 
 .guessedIncorrect {
-    color: red;
-    padding: 5px;
+    color: red !important;
 }
 
 .notGuessed {
