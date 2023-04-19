@@ -74,6 +74,11 @@ a {
     padding: 5px;
 }
 
+#wrongGuesses {
+    background-color: purple;
+    color: white;
+}
+
 #reset {
     background-color: red;
     color: white;

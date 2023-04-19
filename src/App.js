@@ -11,7 +11,9 @@ function App() {
 
     //the setter function for guessedLetters
     function handleGuess(newGuess) {
-        setValue(guessedLetters+newGuess);
+        setValue(guessedLetters + newGuess);
+       // console.log(guessedLetters);
+        getNumWrong();
     }
 
     //the amount of wrong guesses allowed
@@ -20,9 +22,39 @@ function App() {
     //the amount of wrong user guesses
     const [numGuess, increaseNum] = useState(0); 
 
-    //the setter function for numGuess
-    function handleNum(newGuess) {
-        increaseNum(guessedLetters + newGuess);
+    //the setter function for numGuess to increase it for every wrong guess
+    function handleNum() {
+        increaseNum(numGuess + 1);
+        //console.log(numGuess);
+
+        //end the game if at maxGuesses
+        if (numGuess == maxGuesses) {
+            console.log("game over"); // END THE GAME 
+        }
+    }
+
+    //calculate the amount of wrong guesses
+    function getNumWrong() {
+        //let currChar = "";
+        let currStr = guessedLetters;
+        //console.log(currStr);
+        let lastChar = currStr.slice(-1);
+        console.log(lastChar);
+
+        //for (let i = 0; i < guessedLetters.length; i++) {
+
+            //if the letter is in the guessedLetters string (has been guessed)
+        if (tempWord.includes(lastChar)) {
+                //if the letter is correct
+                //if (tempWord.includes(guessedLetters[i].value)) {
+                //    //don't do anything
+                console.log("right");
+        }
+        else { //if the letter is incorrect
+                console.log("wrong");
+                handleNum();
+        } 
+       // }
     }
 
 
@@ -52,22 +84,21 @@ function App() {
             //console.log(guessedLetters.value);
         }
 
+        //call the onclick if enter is pressed
+        const enterPressed = (event) => {
+            if (event.key === "Enter") {
+                checkGuess(guess);
+            }
+        }
 
         //the html of the input field and button to get user input
         return (
             <div>
-                <input type="text" id="guess" name="guess" maxLength="1" onChange={handleChange} value={guess} />
+                <input type="text" id="guess" name="guess" maxLength="1" onChange={handleChange} onKeyPress={enterPressed} value={guess} autoFocus/>
                 <button id="confirmGuess" onClick={() => checkGuess(guess)}>GUESS</button>
             </div>
         );
 
-        //var input = document.getElementById("guess");
-        //input.addEventListener("keypress", function (event) {
-        //    if (event.key === "Enter") {
-        //        event.preventDefault();
-        //        document.getElementById("confirmGuess").click();
-        //    }
-        //});
     }
 
     //the main content of the page
@@ -87,9 +118,11 @@ function App() {
 
                 <Word value={guessedLetters}></Word>
 
-                <Alphabet value={guessedLetters}></Alphabet>
+                <Alphabet value={guessedLetters} ></Alphabet>
 
                 <UserInput value={guessedLetters}></UserInput>
+
+                <div id="wrongGuesses">{numGuess} / {maxGuesses}</div>
 
             </div>
             
@@ -97,6 +130,7 @@ function App() {
   );
 }
 
+//data={{ handleNum: { handleNum } }}
 
 //variables and arrays
 const tempWord = "I'm a sentence to guess!";
@@ -173,7 +207,7 @@ function Word(guessedLetters) {
 
 
 //the whole alphabet
-function Alphabet(guessedLetters) {
+function Alphabet(guessedLetters/*, handleNum*/) {
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const collectionOfAlph = []; 
     let guessedClass = 0; //decide which classname the character will get depending on if it has been guessed or not
@@ -183,11 +217,13 @@ function Alphabet(guessedLetters) {
 
         //if the letter is in the guessedLetters string (has been guessed)
         if (guessedLetters.value.includes(letters[i]) || guessedLetters.value.includes(letters[i].toLowerCase()) || guessedLetters.value.includes(letters[i].toUpperCase())) {
-            //if the letter is in the word to guess
+            //if the letter is correct
             if (tempWord.includes(letters[i]) || tempWord.includes(letters[i].toLowerCase()) || tempWord.includes(letters[i].toUpperCase())) {
                 guessedClass = 3;
-            } else {
+            } else { //if the letter is incorrect
                 guessedClass = 2;
+               // console.log("wrong");
+                //handleNum = {handleNum};
             }
         } else {
             guessedClass = 1;
