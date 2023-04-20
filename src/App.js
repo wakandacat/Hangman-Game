@@ -1,19 +1,53 @@
 import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import React from 'react'
 
 
 //this code goes into the <body> tag in index.html
 function App() {
 
     //the guessed letters variable
+    const [gameState, setGame] = useState(0); //0 is ongoing, 1 is win, 2 is loss, 3 is endgame
+
+    function handleGameState(state) {
+       // console.log(state);
+        setGame(state);
+    }
+
+
+    //reference to an html element (in this case the sentence to guess div)
+    const ref = React.useRef(null);
+
+    //useEffect(() => {
+    if (gameState == 1) {
+        // The DOM element is accessible here
+        console.log(ref.current);
+        ref.current.className = ref.current.className + " complete";
+
+            //"https://en.wikipedia.org/wiki/"
+
+        //change the game state so this only happens once
+        handleGameState(3);
+    }   
+    //}, []);
+
+    //the guessed letters variable
     const [guessedLetters, setValue] = useState("");
 
     //the setter function for guessedLetters
     function handleGuess(newGuess) {
-        setValue(guessedLetters + newGuess);
-       // console.log(guessedLetters);
-        getNumWrong();
+
+        if (newGuess == "!") { //if ! received, then clear all the guessed letters
+            setValue("");
+            //console.log(guessedLetters);
+        } else {
+            setValue(guessedLetters + newGuess);
+            //console.log(guessedLetters + newGuess);
+            getNumWrong(guessedLetters + newGuess);
+            console.log(checkComplete(guessedLetters + newGuess));
+            console.log(gameState);
+        }
     }
 
     //the amount of wrong guesses allowed
@@ -24,6 +58,7 @@ function App() {
 
     //the setter function for numGuess to increase it for every wrong guess
     function handleNum() {
+
         increaseNum(numGuess + 1);
         //console.log(numGuess);
 
@@ -34,27 +69,23 @@ function App() {
     }
 
     //calculate the amount of wrong guesses
-    function getNumWrong() {
+    function getNumWrong(guessedLetters) {
         //let currChar = "";
         let currStr = guessedLetters;
         //console.log(currStr);
         let lastChar = currStr.slice(-1);
-        console.log(lastChar);
-
-        //for (let i = 0; i < guessedLetters.length; i++) {
+       // console.log(lastChar);
 
             //if the letter is in the guessedLetters string (has been guessed)
         if (tempWord.includes(lastChar)) {
                 //if the letter is correct
-                //if (tempWord.includes(guessedLetters[i].value)) {
-                //    //don't do anything
-                console.log("right");
+                //don't do anything
+                //console.log("right");
         }
         else { //if the letter is incorrect
-                console.log("wrong");
+               // console.log("wrong");
                 handleNum();
         } 
-       // }
     }
 
 
@@ -101,6 +132,105 @@ function App() {
 
     }
 
+    //show the answer
+    function GiveUpButton(guessedLetters) {
+
+        return <button id="reset" onClick={showAllLetters}>GIVE UP</button>
+
+    }
+
+    function showAllLetters() {
+        handleGuess("abcdefghijklmnopqrstuvwxyz");
+    }
+
+
+    //the new word button
+    function ResetButton(guessedLetters) {
+
+        //fetch('https://en.wikipedia.org/wiki/Special:Random').then(function (response) {
+        //    console.log(response.url); // Final URL after redirections
+        //});
+
+        return <button id="reset" onClick={getNewURL}>NEW</button>
+
+    }
+
+
+    //function to get a new word to guess
+    //idk what this is actually
+    function getNewURL() {
+
+        //clear the guessed letters
+        handleGuess("!");
+
+        var url = new URL("https://en.wikipedia.org/w/api.php?"),
+            params = { action: "query", format: "json", list: "random", rnlimit: 1, rnnamespace: 0 };
+
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+
+
+        const request = new Request(url);
+
+        const myOptions = {
+            method: "GET",
+            mode: "no-cors",
+        };
+
+
+        fetch(request, myOptions)
+            .then(response => Response.json)
+            .then(data => console.log(data));
+
+    }
+    //check if all the letters in the word to guess have been guessed
+    function checkComplete(guessed) {
+
+        let guessStr = guessed.toLowerCase();
+        let toGuess = tempWord.toLowerCase();
+
+        for (var i = 0; i < toGuess.length; i++) { 
+            //if the letter is not there
+            if (guessStr.indexOf(toGuess.charAt(i)) === -1) {
+                return false; //return
+            }
+        }
+        //if all the letters are there, then it is guessed successfully
+        handleGameState(1);
+        return true;
+
+    }
+
+
+
+    //each character in the word to guess and alphabet
+    function Character({ value }) {
+        return <p className="chars">{value}</p>;
+    }
+
+
+    //the whole word to guess
+    function Word(guessedLetters) {
+        const collectionOfChars = [];
+        let currChar = "";
+
+        for (let i = 0; i < tempWord.length; i++) {
+
+            //  if the letter has been guessed and is in the word, show it
+            if (guessedLetters.value.includes(tempWord[i].toUpperCase()) || guessedLetters.value.includes(tempWord[i].toLowerCase())) {
+                currChar = tempWord[i];
+            } else if ((/[a-zA-Z]/).test(tempWord[i])) { //all other letters, hide
+                currChar = "_";
+            }
+            else { //show all other characters
+                currChar = tempWord[i];
+            }
+
+            collectionOfChars.push(<Character value={currChar} key={i} />);
+
+        }
+        return <div id="theWord" className="charBox" ref={ref}>{collectionOfChars}</div>;
+    }
+
     //the main content of the page
     return (
 
@@ -111,6 +241,8 @@ function App() {
                 <h1>HANGMAN</h1> 
                 
                 <ResetButton value={guessedLetters}></ResetButton>
+
+                <GiveUpButton value={guessedLetters}></GiveUpButton>
 
             </header>
 
@@ -130,80 +262,13 @@ function App() {
   );
 }
 
-//data={{ handleNum: { handleNum } }}
 
-//variables and arrays
-const tempWord = "I'm a sentence to guess!";
+//global variables and arrays
+const tempWord = "Rhubarb";
 let newURL = "";
 
 
-//the new word button
-function ResetButton(guessedLetters) {
 
-    //fetch('https://en.wikipedia.org/wiki/Special:Random').then(function (response) {
-    //    console.log(response.url); // Final URL after redirections
-    //});
-
-    //clear the guessed letters
-   // guessedLetters = "";
-
-    return <button id="reset" onClick={getNewURL}>NEW</button>
-
-}
-
-
-//function to get a new word to guess
-//idk what this is actually
-function getNewURL() {
-
-    var url = new URL("https://en.wikipedia.org/w/api.php?"),
-        params = { action: "query", format: "json", list: "random", rnlimit: 1, rnnamespace: 0 };
-
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-
-
-    const request = new Request(url);
-
-    const myOptions = {
-        method: "GET",
-        mode: "no-cors",
-    };
-
-
-    fetch(request, myOptions)
-        .then(response => Response.json)
-        .then(data => console.log(data));
-
-}
-
-//each character in the word to guess and alphabet
-function Character({value}) {
-    return <p className="chars">{value}</p>;
-}
-
-
-//the whole word to guess
-function Word(guessedLetters) {
-    const collectionOfChars = [];
-    let currChar = "";
-
-    for (let i = 0; i < tempWord.length; i++) {
-  
-        //  if the letter has been guessed and is in the word, show it
-        if (guessedLetters.value.includes(tempWord[i].toUpperCase()) || guessedLetters.value.includes(tempWord[i].toLowerCase())) {
-            currChar = tempWord[i];
-        } else if ((/[a-zA-Z]/).test(tempWord[i])) { //all other letters, hide
-            currChar = "_";
-        }
-        else { //show all other characters
-            currChar = tempWord[i];
-        }
-
-        collectionOfChars.push(<Character value={currChar} key={i} />);
-
-    }
-    return <div id="theWord" className="charBox">{collectionOfChars}</div>;
-}
 
 
 //the whole alphabet
