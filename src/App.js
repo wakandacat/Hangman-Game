@@ -8,7 +8,7 @@ import React from 'react'
 function App() {
 
     //the guessed letters variable
-    const [gameState, setGame] = useState(0); //0 is ongoing, 1 is win, 2 is loss, 3 is endgame
+    const [gameState, setGame] = useState(0); //0 is ongoing, 1 is win, 2 is loss
 
     function handleGameState(state) {
        // console.log(state);
@@ -19,18 +19,19 @@ function App() {
     //reference to an html element (in this case the sentence to guess div)
     const ref = React.useRef(null);
 
-    //useEffect(() => {
+    //useEffect makes it only happen once
+    useEffect(() => {
     if (gameState == 1) {
         // The DOM element is accessible here
-        console.log(ref.current);
         ref.current.className = ref.current.className + " complete";
+        ref.current.href = "https://en.wikipedia.org/wiki/" + tempWord;
+        ref.current.style.cursor = "pointer";
+        console.log(ref.current);
 
             //"https://en.wikipedia.org/wiki/"
 
-        //change the game state so this only happens once
-        handleGameState(3);
     }   
-    //}, []);
+    }, [gameState]);
 
     //the guessed letters variable
     const [guessedLetters, setValue] = useState("");
@@ -228,7 +229,7 @@ function App() {
             collectionOfChars.push(<Character value={currChar} key={i} />);
 
         }
-        return <div id="theWord" className="charBox" ref={ref}>{collectionOfChars}</div>;
+        return <div><a id="theWord" className="charBox" ref={ref} href="" target="_blank">{collectionOfChars}</a></div>;
     }
 
     //the main content of the page

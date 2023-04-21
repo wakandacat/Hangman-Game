@@ -51,6 +51,7 @@ a {
     background-color: green;
     display: flex;
     flex-wrap: wrap;
+    cursor: default;
 }
 
 #alph {
@@ -84,8 +85,8 @@ a {
     color: white;
 }
 
-#complete{
-    color: deeppink !important;
+.complete{
+    background-color: deeppink !important;
 }
 
 @keyframes App-logo-spin {
