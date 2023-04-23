@@ -7,6 +7,11 @@ import React from 'react'
 //this code goes into the <body> tag in index.html
 function App() {
 
+//-------------variables-----------------//
+    //hanged man card image
+    const card = require('./Resources/HangmanCard.png'); 
+
+
     //the guessed letters variable
     const [gameState, setGame] = useState(0); //0 is ongoing, 1 is win, 2 is loss
 
@@ -58,10 +63,16 @@ function App() {
     const [numGuess, increaseNum] = useState(0); 
 
     //the setter function for numGuess to increase it for every wrong guess
-    function handleNum() {
+    function handleNum(increment) {
 
-        increaseNum(numGuess + 1);
-        //console.log(numGuess);
+        //if ! received, then reset the count to 0
+        if (increment == "!") {
+            increaseNum(0);
+        } else {
+            increaseNum(numGuess + increment);
+            //console.log(numGuess);
+        }
+
 
         //end the game if at maxGuesses
         if (numGuess == maxGuesses) {
@@ -85,7 +96,7 @@ function App() {
         }
         else { //if the letter is incorrect
                // console.log("wrong");
-                handleNum();
+                handleNum(1);
         } 
     }
 
@@ -127,7 +138,7 @@ function App() {
         return (
             <div>
                 <input type="text" id="guess" name="guess" maxLength="1" onChange={handleChange} onKeyPress={enterPressed} value={guess} autoFocus/>
-                <button id="confirmGuess" onClick={() => checkGuess(guess)}>GUESS</button>
+                <button id="confirmGuess" className="headerButton" onClick={() => checkGuess(guess)}><p>GUESS</p></button>
             </div>
         );
 
@@ -136,7 +147,7 @@ function App() {
     //show the answer
     function GiveUpButton(guessedLetters) {
 
-        return <button id="reset" onClick={showAllLetters}>GIVE UP</button>
+        return <button className="headerButton" onClick={showAllLetters}><p>GIVE UP</p></button>
 
     }
 
@@ -152,7 +163,7 @@ function App() {
         //    console.log(response.url); // Final URL after redirections
         //});
 
-        return <button id="reset" onClick={getNewURL}>NEW</button>
+        return <button className="headerButton" onClick={getNewURL}><p>NEW</p></button>
 
     }
 
@@ -163,6 +174,9 @@ function App() {
 
         //clear the guessed letters
         handleGuess("!");
+
+        //clear the amounf of wrong guesses
+        handleNum("!");
 
         var url = new URL("https://en.wikipedia.org/w/api.php?"),
             params = { action: "query", format: "json", list: "random", rnlimit: 1, rnnamespace: 0 };
@@ -202,7 +216,6 @@ function App() {
     }
 
 
-
     //each character in the word to guess and alphabet
     function Character({ value }) {
         return <p className="chars">{value}</p>;
@@ -232,6 +245,39 @@ function App() {
         return <div><a id="theWord" className="charBox" ref={ref} href="" target="_blank">{collectionOfChars}</a></div>;
     }
 
+
+    //the whole alphabet
+    function Alphabet(guessedLetters/*, handleNum*/) {
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const collectionOfAlph = [];
+        let guessedClass = 0; //decide which classname the character will get depending on if it has been guessed or not
+        //1 = not guessed, 2 = guessed but wrong, 3 = guessed but right
+
+        for (let i = 0; i < letters.length; i++) {
+
+            //if the letter is in the guessedLetters string (has been guessed)
+            if (guessedLetters.value.includes(letters[i]) || guessedLetters.value.includes(letters[i].toLowerCase()) || guessedLetters.value.includes(letters[i].toUpperCase())) {
+                //if the letter is correct
+                if (tempWord.includes(letters[i]) || tempWord.includes(letters[i].toLowerCase()) || tempWord.includes(letters[i].toUpperCase())) {
+                    guessedClass = 3;
+                } else { //if the letter is incorrect
+                    guessedClass = 2;
+                    // console.log("wrong");
+                    //handleNum = {handleNum};
+                }
+            } else {
+                guessedClass = 1;
+            }
+
+            //toggle character class depending on if it is guessed or not
+            collectionOfAlph.push(<p className={`chars ${guessedClass == 1 ? "" : (guessedClass == 2 ? "guessedIncorrect" : "guessedCorrect")}`} value={letters[i]} key={letters[i].toString()}>{letters[i]}</p>);
+
+        }
+
+        return <div id="alph">{collectionOfAlph}</div>;
+
+    }
+
     //the main content of the page
     return (
 
@@ -239,7 +285,7 @@ function App() {
 
             <header className="App-header">
 
-                <h1>HANGMAN</h1> 
+                <h1 id="title">HANGMAN</h1> 
                 
                 <ResetButton value={guessedLetters}></ResetButton>
 
@@ -249,13 +295,20 @@ function App() {
 
             <div id="mainContent">
 
-                <Word value={guessedLetters}></Word>
+                <div id="topLevel">
+                    <img id="hangCard" src={card} />
+
+                    <div>
+                        <div id="wrongGuesses">{numGuess} / {maxGuesses}</div>
+
+                        <Word value={guessedLetters}></Word>
+                    </div>
+
+                </div>
 
                 <Alphabet value={guessedLetters} ></Alphabet>
 
                 <UserInput value={guessedLetters}></UserInput>
-
-                <div id="wrongGuesses">{numGuess} / {maxGuesses}</div>
 
             </div>
             
@@ -268,41 +321,6 @@ function App() {
 const tempWord = "Rhubarb";
 let newURL = "";
 
-
-
-
-
-//the whole alphabet
-function Alphabet(guessedLetters/*, handleNum*/) {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const collectionOfAlph = []; 
-    let guessedClass = 0; //decide which classname the character will get depending on if it has been guessed or not
-    //1 = not guessed, 2 = guessed but wrong, 3 = guessed but right
-
-    for (let i = 0; i < letters.length; i++) {
-
-        //if the letter is in the guessedLetters string (has been guessed)
-        if (guessedLetters.value.includes(letters[i]) || guessedLetters.value.includes(letters[i].toLowerCase()) || guessedLetters.value.includes(letters[i].toUpperCase())) {
-            //if the letter is correct
-            if (tempWord.includes(letters[i]) || tempWord.includes(letters[i].toLowerCase()) || tempWord.includes(letters[i].toUpperCase())) {
-                guessedClass = 3;
-            } else { //if the letter is incorrect
-                guessedClass = 2;
-               // console.log("wrong");
-                //handleNum = {handleNum};
-            }
-        } else {
-            guessedClass = 1;
-        }
-
-        //toggle character class depending on if it is guessed or not
-        collectionOfAlph.push(<p className={`chars ${guessedClass == 1 ? "" : (guessedClass == 2 ? "guessedIncorrect" : "guessedCorrect")}`} value={letters[i]} key={letters[i].toString()}>{letters[i]}</p>);
-
-    }
-
-    return <div id="alph">{collectionOfAlph}</div>;
-
-}
 
 //run the App function as the "main function"
 export default App;

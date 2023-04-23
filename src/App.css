@@ -2,26 +2,15 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
-  background-color: white;
-  height: 10%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: black;
+    background-color: #1c595b;
+    height: 10%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: black;
 }
 
 a {
@@ -29,45 +18,91 @@ a {
   text-decoration: none;
 }
 
-.App {
+#title {
+    font-family:'Baskerville Old Face';
+    margin: 15px;
+}
 
+body {
+    overflow-y: hidden; /* Hide vertical scrollbar */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
 }
 
 #mainContent {
     position: relative;
-    background-color: lightblue;
+    background-color: #1c595b;
     width: 100%;
-    height: 700px;
+    height: 100vh;
     left: 0px;
 }
 
+#topLevel{
+    display: flex;
+    position: relative;
+}
+
+#hangCard {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    top: auto;
+    left: 50px;
+    animation-name: wrongGuess;
+    animation-duration: 1s;
+}
+
+@keyframes wrongGuess{
+    0% {
+        filter: invert(0%);       
+    }
+    50% {
+        filter: invert(100%);
+    }
+    100% {
+        filter: invert(0%);
+    }
+}
+
 .chars {
-    color: blue;
+    color: #dbb623;
     padding: 5px;
+    font-size: 2em;
+    padding: 10px;
+    margin: 0;
 }
 
 .charBox {
-    position: absolute;
-    background-color: green;
+    background-color: #5e8687;
     display: flex;
     flex-wrap: wrap;
     cursor: default;
+    transform: skew(-20deg);
+    border: 5px solid black;
+    float: right;
+    margin: 20px;
+}
+
+.charBox > p {
+    transform: skew(20deg);
+    font-size: 3em;
 }
 
 #alph {
     position: relative;
-    background-color: greenyellow;
+    background-color: #5e8687;
     display: flex;
     flex-wrap: wrap;
     top: 300px;
+    justify-content: center;
 }
 
 .guessedCorrect {
-    color: green !important;
+    color: #ee0907 !important;
 }
 
 .guessedIncorrect {
     color: red !important;
+    opacity: 30%;
 }
 
 .notGuessed {
@@ -78,22 +113,28 @@ a {
 #wrongGuesses {
     background-color: purple;
     color: white;
+    transform: skew(-20deg);
+    margin-top: 20px;
+    margin-left: 20px;
+    width:100px;
+    border: 3px solid black;
 }
 
-#reset {
+.headerButton {
     background-color: red;
-    color: white;
+    color: black;
+    transform: skew(-20deg);
+    border: 2px solid #dbb623;
+    margin: 15px;
+}
+
+.headerButton > p {
+    margin: 0;
+    padding: 3px 3px 3px 3px;
+    transform: skew(20deg);
 }
 
 .complete{
     background-color: deeppink !important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
