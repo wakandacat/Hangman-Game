@@ -12,6 +12,12 @@ function App() {
     const card = require('./Resources/HangmanCard.png'); 
 
 
+    //global variables and arrays
+    const tempWord = "Proxhyle comoreana";
+    let newURL = "";
+
+
+
     //the guessed letters variable
     const [gameState, setGame] = useState(0); //0 is ongoing, 1 is win, 2 is loss
 
@@ -19,24 +25,6 @@ function App() {
        // console.log(state);
         setGame(state);
     }
-
-
-    //reference to an html element (in this case the sentence to guess div)
-    const ref = React.useRef(null);
-
-    //useEffect makes it only happen once
-    useEffect(() => {
-    if (gameState == 1) {
-        // The DOM element is accessible here
-        ref.current.className = ref.current.className + " complete";
-        ref.current.href = "https://en.wikipedia.org/wiki/" + tempWord;
-        ref.current.style.cursor = "pointer";
-        console.log(ref.current);
-
-            //"https://en.wikipedia.org/wiki/"
-
-    }   
-    }, [gameState]);
 
     //the guessed letters variable
     const [guessedLetters, setValue] = useState("");
@@ -60,7 +48,7 @@ function App() {
     const maxGuesses = 5;
 
     //the amount of wrong user guesses
-    const [numGuess, increaseNum] = useState(0); 
+    const [numGuess, increaseNum] = useState(0);
 
     //the setter function for numGuess to increase it for every wrong guess
     function handleNum(increment) {
@@ -73,23 +61,60 @@ function App() {
             //console.log(numGuess);
         }
 
+    }
 
+    //---------------References of HTML elements to change their properties----------------
+
+    //get the word to guess to add a class to it 
+    const ref = React.useRef(null);//the word to guess
+
+    //useEffect makes it only happen once
+    useEffect(() => {
+    if (gameState == 1) { //if the word is fully guessed
+        // The DOM element is accessible here
+        ref.current.className = ref.current.className + " complete";
+        ref.current.href = "https://en.wikipedia.org/wiki/" + tempWord;
+        ref.current.style.cursor = "pointer";
+        //console.log(ref.current);
+
+    }   
+    }, [gameState]); //check for the gameState variable
+
+
+
+    //get the hangman card image to change its properties
+    const hangRef = React.useRef(null);
+
+    //useEffect makes it only happen once
+    useEffect(() => {
+
+        if (numGuess != 0) { //if the numWrongGuesses increases
+            // The DOM element is accessible here
+            hangRef.current.style.webkitAnimationPlayState = "running"; //start the image animation          
+            //run the animation for one second (the duration of the animation) and then pause it
+            setTimeout(function () { hangRef.current.style.webkitAnimationPlayState = "paused"; }, 1000);
+        }
+    }, [numGuess]);
+
+    useEffect(() => {
         //end the game if at maxGuesses
         if (numGuess == maxGuesses) {
             console.log("game over"); // END THE GAME 
+            hangRef.current.style.filter = "brightness(500%)"; //DOESNT WORK NEED !important somehow
+            console.log(hangRef.current);
         }
-    }
+    }, [numGuess]);
 
     //calculate the amount of wrong guesses
     function getNumWrong(guessedLetters) {
         //let currChar = "";
-        let currStr = guessedLetters;
+        let currStr = guessedLetters.toLowerCase();
         //console.log(currStr);
         let lastChar = currStr.slice(-1);
        // console.log(lastChar);
 
             //if the letter is in the guessedLetters string (has been guessed)
-        if (tempWord.includes(lastChar)) {
+        if (tempWord.toLowerCase().includes(lastChar)) {
                 //if the letter is correct
                 //don't do anything
                 //console.log("right");
@@ -178,6 +203,9 @@ function App() {
         //clear the amounf of wrong guesses
         handleNum("!");
 
+        //reset the gameState
+        handleGameState(0);
+
         var url = new URL("https://en.wikipedia.org/w/api.php?"),
             params = { action: "query", format: "json", list: "random", rnlimit: 1, rnnamespace: 0 };
 
@@ -197,15 +225,23 @@ function App() {
             .then(data => console.log(data));
 
     }
+
+    function EndGameBox() {
+        return <div id="endGame"><p>NEW</p></div>
+    }
+
+
     //check if all the letters in the word to guess have been guessed
     function checkComplete(guessed) {
 
         let guessStr = guessed.toLowerCase();
         let toGuess = tempWord.toLowerCase();
 
+        let onlyLettersStr = "";
+
         for (var i = 0; i < toGuess.length; i++) { 
             //if the letter is not there
-            if (guessStr.indexOf(toGuess.charAt(i)) === -1) {
+            if (guessStr.indexOf(toGuess.charAt(i)) == -1 && (/[a-zA-Z]/).test(toGuess[i]) == true) {
                 return false; //return
             }
         }
@@ -296,7 +332,7 @@ function App() {
             <div id="mainContent">
 
                 <div id="topLevel">
-                    <img id="hangCard" src={card} />
+                    <img id="hangCard" src={card} ref={hangRef}/>
 
                     <div>
                         <div id="wrongGuesses">{numGuess} / {maxGuesses}</div>
@@ -305,6 +341,8 @@ function App() {
                     </div>
 
                 </div>
+
+                <EndGameBox></EndGameBox>
 
                 <Alphabet value={guessedLetters} ></Alphabet>
 
@@ -315,12 +353,6 @@ function App() {
         </div>
   );
 }
-
-
-//global variables and arrays
-const tempWord = "Rhubarb";
-let newURL = "";
-
 
 //run the App function as the "main function"
 export default App;

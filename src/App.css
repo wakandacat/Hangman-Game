@@ -49,6 +49,8 @@ body {
     left: 50px;
     animation-name: wrongGuess;
     animation-duration: 1s;
+    animation-play-state: paused;
+    animation-iteration-count: infinite;
 }
 
 @keyframes wrongGuess{
@@ -60,6 +62,32 @@ body {
     }
     100% {
         filter: invert(0%);
+    }
+}
+
+#endGame {
+    background-color: #5e8687;
+    position: absolute;
+    z-index: 5;
+    left: -110%;
+    top: 40%;
+    width: 105%;
+    padding: 25px;
+    transform: skew(-20deg);
+    transform: rotate(0deg);
+    border: 5px solid black;
+    animation-name: end-game;
+    animation-duration: 0.5s;
+    animation-play-state: paused;
+}
+
+@keyframes end-game {
+    0% {
+        left: -110%;
+    }
+
+    100% {
+        left: -5%;
     }
 }
 
