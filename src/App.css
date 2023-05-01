@@ -3,14 +3,14 @@
 }
 
 .App-header {
-    background-color: #1c595b;
+    background-color: black;
     height: 10%;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     font-size: calc(10px + 2vmin);
-    color: black;
+    color: white;
 }
 
 a {
@@ -42,7 +42,9 @@ body {
 }
 
 #hangCard {
+    position: absolute;
     display: inline-block;
+    z-index: 3;
     width: auto;
     height: auto;
     top: auto;
@@ -66,71 +68,127 @@ body {
 }
 
 #endGame {
-    background-color: #5e8687;
+    background-color: red;
     position: absolute;
     z-index: 5;
-    left: -110%;
-    top: 40%;
-    width: 105%;
+    left: 450px;
+    top: 150px;
+    width: 20%;
     padding: 25px;
-    transform: skew(-20deg);
-    transform: rotate(0deg);
-    border: 5px solid black;
-    animation-name: end-game;
-    animation-duration: 0.5s;
-    animation-play-state: paused;
+    transform: rotate(2deg);
+    color: white;
+    font-weight: bold;
+    font-size: 4em;
+    display: none;
 }
 
-@keyframes end-game {
-    0% {
-        left: -110%;
-    }
-
-    100% {
-        left: -5%;
-    }
-}
-
-.chars {
-    color: #dbb623;
-    padding: 5px;
-    font-size: 2em;
-    padding: 10px;
+#endGame > p {
     margin: 0;
 }
 
+#userDiv {
+    position: relative;
+    background-color: red;
+    transform: rotate(0.5deg);
+    top: -50px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+#userDiv > input[type=text] {
+    background-color: black;
+    color: white;
+    border: red;
+    font-size: 4em;
+    width: 75px;
+    text-align: center;
+    outline: none;
+}
+
+input[type=text]:focus {
+    animation-name: blinking;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    caret-color: transparent;
+}
+
+@keyframes blinking {
+    0% {
+        background-color: black;
+    }
+    50% {
+        background-color: red;
+    }
+    100% {
+        background-color: black;
+    }
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: white;
+    opacity: 1; /* Firefox */
+    text-align: center;
+}
+
+.chars {
+    color: white;
+    font-size: 4em;
+    padding: 0px 15px 0px 15px;
+    margin: 15px 15px 15px;
+    transform: rotate(2deg);
+}
+
 .charBox {
-    background-color: #5e8687;
+    position: relative;
+    left: 0px;
+    top: 70px;
+    background-color: black;
     display: flex;
     flex-wrap: wrap;
     cursor: default;
-    transform: skew(-20deg);
-    border: 5px solid black;
-    float: right;
-    margin: 20px;
+    transform: rotate(0deg);
+    width: 100%;
+    padding-left: 325px;
+    padding-right: 100px;
+    height: 300px;
+    align-items: center;
+    justify-content: center;
+}
+
+hr {
+    width: 100%;
+    border: none;
 }
 
 .charBox > p {
-    transform: skew(20deg);
     font-size: 3em;
+    transform: rotate(0deg);
+    padding: 5px 10px 5px;
 }
 
 #alph {
     position: relative;
-    background-color: #5e8687;
+    background-color: black;
     display: flex;
     flex-wrap: wrap;
     top: 300px;
     justify-content: center;
+    transform: rotate(-2deg);
+    padding: 10px 250px 10px 100px;
+    width: 90%;
+    left: -1%;
 }
 
 .guessedCorrect {
-    color: #ee0907 !important;
+    background-color: white !important;
+    color: black !important;
 }
 
 .guessedIncorrect {
-    color: red !important;
-    opacity: 30%;
+    background-color: red !important;
+    color: black !important;
 }
 
 .notGuessed {
@@ -139,30 +197,43 @@ body {
 }
 
 #wrongGuesses {
-    background-color: purple;
+    position: absolute;
+    background-color: red;
     color: white;
-    transform: skew(-20deg);
+    font-weight: bold;
+    transform: rotate(-2deg);
     margin-top: 20px;
     margin-left: 20px;
-    width:100px;
-    border: 3px solid black;
+    width: 150px;
+    font-size: 2em;
+    z-index: 3;
+    left: 250px;
+    top: 25px;
 }
 
 .headerButton {
     background-color: red;
     color: black;
-    transform: skew(-20deg);
-    border: 2px solid #dbb623;
+    transform: rotate(-2deg);
+    border: none;
     margin: 15px;
+    cursor: pointer;
 }
 
 .headerButton > p {
+    font-size: 2em;
     margin: 0;
     padding: 3px 3px 3px 3px;
-    transform: skew(20deg);
 }
 
-.complete{
-    background-color: deeppink !important;
+#confirmGuess {
+    background-color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.complete > p{
+    background-color: white !important;
+    color: black !important;
 }
 

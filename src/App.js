@@ -11,11 +11,29 @@ function App() {
     //hanged man card image
     const card = require('./Resources/HangmanCard.png'); 
 
-
     //global variables and arrays
-    const tempWord = "Proxhyle comoreana";
+    //temporary array of wikipedia titles until I can get that other function to work
+    const wikiTitles = ["Proxhyle comoreana", "Rhubarb", "Cisco Webex", "Hristina Georgieva", "Chorley Old Hall", "Starbienino", "Vortex (video game)"];
+    //const tempWord = "";
     let newURL = "";
 
+    //TEMP->picking a word to guess from the array
+    const [tempWord, getRandomWord] = useState("");
+
+    function handleNewWord() {
+        getRandomWord(wikiTitles.at(Math.floor(Math.random() * 7)));
+    }
+
+    //useEffect makes it only happen once
+    useEffect(() => {
+
+        if (tempWord == "") {
+            handleNewWord();
+        }
+       
+        console.log(tempWord);
+
+    }, [tempWord]);
 
 
     //the guessed letters variable
@@ -68,18 +86,29 @@ function App() {
     //get the word to guess to add a class to it 
     const ref = React.useRef(null);//the word to guess
 
+    //get the endgame text box 
+    const endRef = React.useRef(null);//the word to guess
+
     //useEffect makes it only happen once
     useEffect(() => {
-    if (gameState == 1) { //if the word is fully guessed
-        // The DOM element is accessible here
-        ref.current.className = ref.current.className + " complete";
-        ref.current.href = "https://en.wikipedia.org/wiki/" + tempWord;
-        ref.current.style.cursor = "pointer";
-        //console.log(ref.current);
+        if (gameState == 1) { //GAME WON
+            //edit the word to guess
+            ref.current.className = ref.current.className + " complete";
+            ref.current.href = "https://en.wikipedia.org/wiki/" + tempWord;
+            ref.current.style.cursor = "pointer";
+            //console.log(ref.current);
 
-    }   
+            //show the end game text box
+            endRef.current.p = "CLICK ME!";
+            endRef.current.style.display = "block";
+        }
+        else if (gameState == 2) { //GAME OVER
+            endRef.current.p = "GAME OVER";
+            endRef.current.style.display = "block";
+        } 
+
+
     }, [gameState]); //check for the gameState variable
-
 
 
     //get the hangman card image to change its properties
@@ -99,11 +128,11 @@ function App() {
     useEffect(() => {
         //end the game if at maxGuesses
         if (numGuess == maxGuesses) {
-            console.log("game over"); // END THE GAME 
+            handleGameState(2);
             hangRef.current.style.filter = "brightness(500%)"; //DOESNT WORK NEED !important somehow
-            console.log(hangRef.current);
         }
     }, [numGuess]);
+
 
     //calculate the amount of wrong guesses
     function getNumWrong(guessedLetters) {
@@ -161,8 +190,8 @@ function App() {
 
         //the html of the input field and button to get user input
         return (
-            <div>
-                <input type="text" id="guess" name="guess" maxLength="1" onChange={handleChange} onKeyPress={enterPressed} value={guess} autoFocus/>
+            <div id="userDiv">
+                <input type="text" id="guess" name="guess" maxLength="1" placeholder="_" onChange={handleChange} onKeyPress={enterPressed} value={guess} autoFocus/>
                 <button id="confirmGuess" className="headerButton" onClick={() => checkGuess(guess)}><p>GUESS</p></button>
             </div>
         );
@@ -194,7 +223,6 @@ function App() {
 
 
     //function to get a new word to guess
-    //idk what this is actually
     function getNewURL() {
 
         //clear the guessed letters
@@ -206,28 +234,31 @@ function App() {
         //reset the gameState
         handleGameState(0);
 
-        var url = new URL("https://en.wikipedia.org/w/api.php?"),
-            params = { action: "query", format: "json", list: "random", rnlimit: 1, rnnamespace: 0 };
+        //get new word to guess
+        handleNewWord();
 
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+        //var url = new URL("https://en.wikipedia.org/w/api.php?"),
+        //    params = { action: "query", format: "json", list: "random", rnlimit: 1, rnnamespace: 0 };
 
-
-        const request = new Request(url);
-
-        const myOptions = {
-            method: "GET",
-            mode: "no-cors",
-        };
+        //Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
 
 
-        fetch(request, myOptions)
-            .then(response => Response.json)
-            .then(data => console.log(data));
+        //const request = new Request(url);
+
+        //const myOptions = {
+        //    method: "GET",
+        //    mode: "no-cors",
+        //};
+
+
+        //fetch(request, myOptions)
+        //    .then(response => Response.json)
+        //    .then(data => console.log(data));
 
     }
 
     function EndGameBox() {
-        return <div id="endGame"><p>NEW</p></div>
+        return <div id="endGame" ref={endRef}><p>temp</p></div>
     }
 
 
@@ -275,7 +306,12 @@ function App() {
                 currChar = tempWord[i];
             }
 
-            collectionOfChars.push(<Character value={currChar} key={i} />);
+
+            if (currChar == " ") { //if a space then add a breakline
+                collectionOfChars.push(<hr value={currChar} key={i}/>);
+            } else {
+                collectionOfChars.push(<Character value={currChar} key={i} />);
+            }
 
         }
         return <div><a id="theWord" className="charBox" ref={ref} href="" target="_blank">{collectionOfChars}</a></div>;
