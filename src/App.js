@@ -13,7 +13,7 @@ function App() {
 
     //global variables and arrays
     //temporary array of wikipedia titles until I can get that other function to work
-    const wikiTitles = ["Proxhyle comoreana", "Rhubarb", "Cisco Webex", "Hristina Georgieva", "Chorley Old Hall", "Starbienino", "Vortex (video game)"];
+    const wikiTitles = ["Proxhyle comoreana", "Rhubarb", "The New Gidget", "Hristina Georgieva", "Chorley Old Hall", "Starbienino", "Vortex (video game)", "Emebt Etea", "Rainy River District"];
     //const tempWord = "";
     let newURL = "";
 
@@ -21,7 +21,7 @@ function App() {
     const [tempWord, getRandomWord] = useState("");
 
     function handleNewWord() {
-        getRandomWord(wikiTitles.at(Math.floor(Math.random() * 7)));
+        getRandomWord(wikiTitles.at(Math.floor(Math.random() * 9)));
     }
 
     //useEffect makes it only happen once
@@ -57,8 +57,10 @@ function App() {
             setValue(guessedLetters + newGuess);
             //console.log(guessedLetters + newGuess);
             getNumWrong(guessedLetters + newGuess);
-            console.log(checkComplete(guessedLetters + newGuess));
-            console.log(gameState);
+            if (checkComplete(guessedLetters + newGuess)) { //if its true, then change the game state to GAME WON state
+                handleGameState(1);
+            }
+           // console.log(gameState);
         }
     }
 
@@ -83,6 +85,7 @@ function App() {
 
     //---------------References of HTML elements to change their properties----------------
 
+
     //get the word to guess to add a class to it 
     const ref = React.useRef(null);//the word to guess
 
@@ -99,12 +102,15 @@ function App() {
             //console.log(ref.current);
 
             //show the end game text box
-            endRef.current.p = "CLICK ME!";
+            endRef.current.innerText = "CLICK ME";
+            endRef.current.href = "https://en.wikipedia.org/wiki/" + tempWord;
             endRef.current.style.display = "block";
+            endRef.current.style.cursor = "pointer";
         }
         else if (gameState == 2) { //GAME OVER
-            endRef.current.p = "GAME OVER";
+            endRef.current.innerText = "GAME OVER";
             endRef.current.style.display = "block";
+            endRef.current.style.cursor = "auto";
         } 
 
 
@@ -129,7 +135,7 @@ function App() {
         //end the game if at maxGuesses
         if (numGuess == maxGuesses) {
             handleGameState(2);
-            hangRef.current.style.filter = "brightness(500%)"; //DOESNT WORK NEED !important somehow
+            hangRef.current.style.setProperty("transform", `rotate(-10deg)`);
         }
     }, [numGuess]);
 
@@ -142,16 +148,20 @@ function App() {
         let lastChar = currStr.slice(-1);
        // console.log(lastChar);
 
+        if (currStr.length < 26) { //MAKE SURE THAT IF THE GIVE UP BUTTON HAS BEEN PRESSED 
+            //(WHICH ADDS ALL LETTERS TO THE STRING) THAT IT DOESNT CHECK FOR INCORRECT LETTERS ANYMORE
             //if the letter is in the guessedLetters string (has been guessed)
-        if (tempWord.toLowerCase().includes(lastChar)) {
+            if (tempWord.toLowerCase().includes(lastChar)) {
                 //if the letter is correct
                 //don't do anything
                 //console.log("right");
-        }
-        else { //if the letter is incorrect
-               // console.log("wrong");
+            }
+            else { //if the letter is incorrect
+                // console.log("wrong");
                 handleNum(1);
-        } 
+            } 
+        }
+       
     }
 
 
@@ -205,6 +215,7 @@ function App() {
 
     }
 
+    //called when give up button pressed, to feed all the letters into the string of guessed letters
     function showAllLetters() {
         handleGuess("abcdefghijklmnopqrstuvwxyz");
     }
@@ -237,6 +248,9 @@ function App() {
         //get new word to guess
         handleNewWord();
 
+        //reset the card rotation
+        hangRef.current.style.setProperty("transform", `rotate(0deg)`);
+
         //var url = new URL("https://en.wikipedia.org/w/api.php?"),
         //    params = { action: "query", format: "json", list: "random", rnlimit: 1, rnnamespace: 0 };
 
@@ -258,7 +272,7 @@ function App() {
     }
 
     function EndGameBox() {
-        return <div id="endGame" ref={endRef}><p>temp</p></div>
+        return <a href="" id="endGame" ref={endRef} target="_blank">temp</a>
     }
 
 
@@ -314,7 +328,7 @@ function App() {
             }
 
         }
-        return <div><a id="theWord" className="charBox" ref={ref} href="" target="_blank">{collectionOfChars}</a></div>;
+        return <a id="theWord" className="charBox" ref={ref} href="" target="_blank">{collectionOfChars}</a>;
     }
 
 
@@ -370,11 +384,9 @@ function App() {
                 <div id="topLevel">
                     <img id="hangCard" src={card} ref={hangRef}/>
 
-                    <div>
-                        <div id="wrongGuesses">{numGuess} / {maxGuesses}</div>
+                    <div id="wrongGuesses">{numGuess} / {maxGuesses}</div>
 
-                        <Word value={guessedLetters}></Word>
-                    </div>
+                    <Word value={guessedLetters}></Word>
 
                 </div>
 

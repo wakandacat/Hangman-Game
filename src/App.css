@@ -9,7 +9,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    font-size: calc(10px + 2vmin);
+    font-size: 1.75em;
     color: white;
 }
 
@@ -19,7 +19,7 @@ a {
 }
 
 #title {
-    font-family:'Baskerville Old Face';
+    /*font-family:'Baskerville Old Face';*/
     margin: 15px;
 }
 
@@ -30,7 +30,7 @@ body {
 
 #mainContent {
     position: relative;
-    background-color: #1c595b;
+    background-color: white;
     width: 100%;
     height: 100vh;
     left: 0px;
@@ -39,6 +39,7 @@ body {
 #topLevel{
     display: flex;
     position: relative;
+    width: 100%;
 }
 
 #hangCard {
@@ -49,6 +50,7 @@ body {
     height: auto;
     top: auto;
     left: 50px;
+    transform: rotate(0deg);
     animation-name: wrongGuess;
     animation-duration: 1s;
     animation-play-state: paused;
@@ -71,15 +73,16 @@ body {
     background-color: red;
     position: absolute;
     z-index: 5;
-    left: 450px;
+    left: 1050px;
     top: 150px;
     width: 20%;
     padding: 25px;
-    transform: rotate(2deg);
+    transform: rotate(5deg);
     color: white;
     font-weight: bold;
     font-size: 4em;
     display: none;
+    cursor: auto;
 }
 
 #endGame > p {
@@ -90,7 +93,7 @@ body {
     position: relative;
     background-color: red;
     transform: rotate(0.5deg);
-    top: -50px;
+    top: -75px;
     align-items: center;
     display: flex;
     justify-content: center;
@@ -151,8 +154,8 @@ input[type=text]:focus {
     transform: rotate(0deg);
     width: 100%;
     padding-left: 325px;
-    padding-right: 100px;
-    height: 300px;
+    padding-right: 325px;
+    height: 325px;
     align-items: center;
     justify-content: center;
 }
@@ -163,7 +166,7 @@ hr {
 }
 
 .charBox > p {
-    font-size: 3em;
+    font-size: 2.5em;
     transform: rotate(0deg);
     padding: 5px 10px 5px;
 }
@@ -173,7 +176,7 @@ hr {
     background-color: black;
     display: flex;
     flex-wrap: wrap;
-    top: 300px;
+    top: 275px;
     justify-content: center;
     transform: rotate(-2deg);
     padding: 10px 250px 10px 100px;
